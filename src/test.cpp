@@ -3,6 +3,7 @@
 #include <functional>
 #include "TrantorThreadPool.h"
 #include "TrantorBlockQueue.h"
+#include "TrantorSemaphore.h"
 
 using namespace std;
 using namespace trantor;
@@ -52,4 +53,33 @@ void trantorBlockQueueTest()
 	std::thread take_thread(std::bind(take, &queue));
 	push_thread.join();
 	take_thread.join();
+}
+
+void sema_wait(TrantorSemaphore* sema)
+{
+	cout << "wait" << endl;
+	sema->wait();
+	cout << "wait" << endl;
+	sema->wait();
+	cout << "wait" << endl;
+	sema->wait();
+	cout << "wait" << endl;
+	sema->wait();
+	cout << "wait" << endl;
+}
+
+void sema_post(TrantorSemaphore* sema)
+{
+	cout << "post" << endl;
+	sema->post();
+}
+
+void trantorSemaphoreTest()
+{
+	TrantorSemaphore sema(3);
+	std::thread wait_thread(bind(sema_wait, &sema));
+	std::this_thread::sleep_for(std::chrono::seconds(5));
+	std::thread post_thread(bind(sema_post, &sema));
+	wait_thread.join();
+	post_thread.join();
 }

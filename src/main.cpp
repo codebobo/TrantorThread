@@ -2,15 +2,13 @@
 #include <functional>
 extern void trantorThreadPoolTest();
 extern void trantorBlockQueueTest();
+extern void trantorSemaphoreTest();
 
-void test(std::vector<int>& tmp)
-{}
 
 int main()
 {
-	std::vector<int> a;
-	auto f = std::bind(test, a);
 	//trantorThreadPoolTest();
-	trantorBlockQueueTest();
+	//trantorBlockQueueTest();
+	trantorSemaphoreTest();
 	return 0;
 }
