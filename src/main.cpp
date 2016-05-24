@@ -1,33 +1,16 @@
-#include<map>
-#include<vector>
-#include<iostream>
-#include<sstream>
-#include<string>
-#include<memory>
+#include <vector>
 #include <functional>
-#include <utility>
-#include "TrantorBlockingQueue.h"
-#include "TrantorThreadPool.h"
+extern void trantorThreadPoolTest();
+extern void trantorBlockQueueTest();
 
-using namespace std;
-using namespace trantor;
+void test(std::vector<int>& tmp)
+{}
 
 int main()
 {
-	TrantorCachedThreadPool pool(10);
-	for (int i = 0; i < 10000; i++)
-	{
-		pool.pushTask([]() {int i = 0; });
-	}
-	pool.waitUntilFinished();
-	cout <<"thread num1: "<< pool.getThreadNum() << endl;
-	pool.reset();
-	cout << "thread num2: " << pool.getThreadNum() << endl;
-	for (int i = 0; i < 10000; i++)
-	{
-		pool.pushTask([]() {int i = 0; });
-	}
-	pool.waitUntilFinished();
-	cout << "thread num3: " << pool.getThreadNum() << endl;
+	std::vector<int> a;
+	auto f = std::bind(test, a);
+	//trantorThreadPoolTest();
+	trantorBlockQueueTest();
 	return 0;
 }
