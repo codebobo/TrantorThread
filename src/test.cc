@@ -4,6 +4,7 @@
 #include "TrantorThreadPool.h"
 #include "TrantorBlockQueue.h"
 #include "TrantorSemaphore.h"
+#include "TrantorShareMutex.h"
 
 using namespace std;
 using namespace trantor;
@@ -82,4 +83,34 @@ void trantorSemaphoreTest()
 	std::thread post_thread(bind(sema_post, &sema));
 	wait_thread.join();
 	post_thread.join();
+}
+
+void rd_thread(TrantorShareMutex* mtx)
+{	
+	TrantorRdLock lock(*mtx);
+	std::this_thread::sleep_for(std::chrono::seconds(2));
+}
+
+void wr_thread(TrantorShareMutex* mtx)
+{
+	for (int i = 0; i < 10; i++)
+	{
+		TrantorWrLock lock(*mtx);
+	}
+}
+
+void trantorShareMutexTest()
+{
+	TrantorShareMutex mtx;
+	std::thread* rd_test[10];
+	for (int i = 0; i < 10; i++)
+	{
+		rd_test[i] = new std::thread(bind(rd_thread, &mtx));
+	}
+	std::thread wr_test(bind(wr_thread, &mtx));
+	for (int i = 0; i < 10; i++)
+	{
+		rd_test[i]->join();
+	}
+	wr_test.join();
 }

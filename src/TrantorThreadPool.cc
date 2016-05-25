@@ -27,7 +27,7 @@ namespace trantor
 		{
 			std::unique_lock<std::mutex> lock(mtx_);
 			pool_alive_ = false;
-			not_empty_cv_.notify_one();
+			not_empty_cv_.notify_all();
 		}
 		for_each(thread_queue_.begin(), thread_queue_.end(), f);
 	}

@@ -39,7 +39,7 @@ namespace trantor
 	class TrantorSingleThread : TrantorNonCopyable
 	{
 	public:
-		TrantorSingleThread():thread_pool_(1) {}
+		explicit TrantorSingleThread():thread_pool_(1) {}
 		void pushTask(std::function<void()> func)
 		{
 			thread_pool_.pushTask(func);
@@ -63,7 +63,7 @@ namespace trantor
 	class TrantorCachedThreadPool : TrantorNonCopyable
 	{
 	public:
-		TrantorCachedThreadPool():max_thread_num_(INT16_MAX){}
+		explicit TrantorCachedThreadPool():max_thread_num_(INT16_MAX){}
 		TrantorCachedThreadPool(const uint16_t max_thread_num) :max_thread_num_(max_thread_num) {}
 		void pushTask(std::function<void()> func);
 		uint16_t getThreadNum();
