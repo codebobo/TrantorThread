@@ -32,6 +32,7 @@ namespace trantor
 		std::condition_variable empty_cv_;
 		std::atomic<bool> wait_empty_;
 		std::atomic<bool> pool_alive_;
+		long left_task_num_;
 
 		void threadFunc();
 	};

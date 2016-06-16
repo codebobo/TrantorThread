@@ -6,7 +6,7 @@ using namespace std;
 //static long cnt2 = 0;
 namespace trantor
 {
-	TrantorFixedThreadPool::TrantorFixedThreadPool(const int thread_num):pool_alive_(true), wait_empty_(false)
+	TrantorFixedThreadPool::TrantorFixedThreadPool(const int thread_num):pool_alive_(true), wait_empty_(false), left_task_num_(0)
 	{
 		assert(thread_num > 0);
 		for(int i = 0; i < thread_num; i++)
@@ -35,6 +35,7 @@ namespace trantor
 	{
 		std::unique_lock<std::mutex> lock(mtx_);
 		task_queue_.push(func);
+		left_task_num_++;
 		//cout << "task push num: " << cnt1++<<" "<< task_queue_.size() << " " << std::this_thread::get_id() <<endl;
 		not_empty_cv_.notify_one(); 
 	}
@@ -42,7 +43,7 @@ namespace trantor
 	void TrantorFixedThreadPool::waitUntilFinished()
 	{
 		std::unique_lock<std::mutex> lock(mtx_);
-		if (task_queue_.empty())
+		if (left_task_num_ == 0)
 		{
 			return;
 		}
@@ -67,7 +68,7 @@ namespace trantor
 				std::unique_lock<std::mutex> lock(mtx_);
 				if (pool_alive_)
 				{
-					if (wait_empty_ && task_queue_.empty())
+					if (wait_empty_ && left_task_num_ == 0)
 					{
 						empty_cv_.notify_one();
 					}
@@ -83,6 +84,10 @@ namespace trantor
 			if (func_to_do)
 			{
 				func_to_do();
+			}
+			{
+				std::unique_lock<std::mutex> lock(mtx_);
+				left_task_num_--;
 			}
 		}
 	}
