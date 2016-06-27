@@ -61,9 +61,9 @@ namespace trantor
 	}
 	void TrantorFixedThreadPool::threadFunc()
 	{
-		std::function<void()> func_to_do;
 		while(pool_alive_)
 		{
+			std::function<void()> func_to_do;
 			{
 				std::unique_lock<std::mutex> lock(mtx_);
 				if (pool_alive_)
@@ -84,11 +84,12 @@ namespace trantor
 			if (func_to_do)
 			{
 				func_to_do();
+				{
+					std::unique_lock<std::mutex> lock(mtx_);
+					left_task_num_--;
+				}
 			}
-			{
-				std::unique_lock<std::mutex> lock(mtx_);
-				left_task_num_--;
-			}
+			
 		}
 	}
 	void TrantorCachedThreadPool::pushTask(std::function<void()> func)

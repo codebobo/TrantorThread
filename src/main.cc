@@ -16,9 +16,8 @@ int main()
 	//std::mutex mtx;
 	//mtx.lock();
 	//mtx.lock();
-
-	trantor::TrantorAny a = 1;
-	std::string name = a.typeId().name();
-	auto b = GET_ANY_VALUE(int, a);
+	std::vector<int&&> ret;
+	for(auto&& a : ret)
+	{ }
 	return 0;
 }
